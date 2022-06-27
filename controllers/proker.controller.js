@@ -27,78 +27,23 @@ exports.create = async (req, res) => {
     }
 };
 
-exports.index = async (req, res) => {
-  await Proker.find()
-    .then((data) => {
-      res.json(data);
-    })
-    .catch((error) => {
-      res.status(500).send({ message: error });
-    });
-};
+exports.fetchAll = async (req, res) => {
+    const { id } = req.params
 
-// exports.findByKelompok = async (req, res) => {
-//   const kelompok = req.params.kelompok;
-//   await Proker.find({ kelompok: kelompok })
-//     .exec()
-//     .then((data) => {
-//       console.log(data);
-//       res.json(data);
-//     })
-//     .catch((error) => {
-//       res.status(500).send({ message: error });
-//     });
-// };
-
-exports.findOne = async (req, res) => {
-  const id = req.params.id;
-  await Proker.findById(id)
-    .then((data) => {
-      if (!data) {
-        res.status(404).send({ message: "Not found" });
-      } else {
-        res.status(200).send({ message: "Success", data: data });
-      }
-    })
-    .catch((error) => {
-      res.status(500).send({ message: "failed", error: error });
-    });
-};
+    try {
+        const proker = await Kelompok.findById(id).select("proker -_id").populate("proker").exec()
+        res.status(200).json(proker);
+    } catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+}
 
 exports.delete = async (req, res) => {
-  const id = req.params.id;
-  await Proker.findByIdAndRemove(id)
-    .then((data) => {
-      if (!data) {
-        res
-          .status(400)
-          .send({ message: `Proker dengan id = ${id} tidak ditemukan` });
-      } else {
-        res.status(200).send({ message: "Berhasil menghapus proker" });
-      }
-    })
-    .catch((error) => {
-      res.status(500).send({ message: "something was wrong", error: error });
-    });
-};
+    const { id } = req.params
+    
+    try {
+        const proker = await Proker.findOneAndRemove()
+    } catch (error) {
 
-exports.update = async (req, res) => {
-  const id = req.params.id;
-  const { title, divisi, deskripsi } = req.body;
-
-  await Proker.findByIdAndUpdate(
-    id,
-    { title, divisi, deskripsi },
-    { useFindAndModify: false }
-  )
-    .then((data) => {
-      if (!data) {
-        res.status(404).send({ message: "update failed" });
-      } else {
-        res.status(200).send({ message: "successfullu updated" });
-      }
-    })
-    .catch((error) => {
-      res.status(500).send({ message: "error happened", error: error });
-    });
-};
+    }
+}

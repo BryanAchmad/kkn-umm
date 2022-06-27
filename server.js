@@ -12,6 +12,7 @@ var corsOptions = {
 const authController = require("./controllers/auth.controller");
 const prokerController = require("./controllers/proker.controller");
 const kelompokController = require("./controllers/kelompok.controller");
+const kegiatanController = require("./controllers/kegiatan.controller")
 const auth = require("./middleware/auth");
 
 app.use(express.json());
@@ -55,10 +56,15 @@ app.get("/kelompok/:id", kelompokController.findKelompokById);
  * proker route
  */
 app.post("/proker/:id", prokerController.create)
-app.get("/proker/detail/:id", prokerController.findOne)
-app.get("/proker/:id", prokerController.fetch) //find by id kelompok
-app.delete("/proker/:id", prokerController.delete)
-app.patch("/proker/:id", prokerController.update)
+app.get("/proker/:id", prokerController.fetchAll)
+// app.get("/proker/:id", prokerController.fetch) //find by id kelompok
+// app.delete("/proker/:id", prokerController.delete)
+// app.patch("/proker/:id", prokerController.update)
+
+/**
+ * kegiatan route
+ */
+// app.post("/kegiatan/:id", kegiatanController.create)
 
 // console.log("error");
 // app.get("/proker/detail/:id", auth, prokerController.findOne);

@@ -6,6 +6,6 @@ db.mongoose = mongoose;
 db.user = require("./user.model");
 db.proker = require("./proker.model");
 db.kelompok = require("./kelompok.model")
-
+db.kegiatan = require("./kegiatan.model")
 
 module.exports = db;

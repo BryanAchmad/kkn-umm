@@ -6,6 +6,12 @@ const Proker = new mongoose.model(
         title: {type: String },
         divisi: { type: String },
         deskripsi: { type: String},
+        kegiatan : [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Kegiatan"
+            }
+        ],
     },
     {
         timestamps: {
