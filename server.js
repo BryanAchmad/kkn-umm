@@ -55,16 +55,17 @@ app.get("/kelompok/:id", kelompokController.findKelompokById);
 /**
  * proker route
  */
-app.post("/proker/:id", prokerController.create)
-app.get("/proker/:id", prokerController.fetchAll)
+app.post("/proker/:id", prokerController.create) //upsert kelompok.proker using id kelompok
+app.get("/proker/:id", prokerController.fetchAll) //id kelompok
+app.patch("/proker/:id", prokerController.update) //id proker
+app.delete("/proker/:id", prokerController.delete) // id proker
 // app.get("/proker/:id", prokerController.fetch) //find by id kelompok
-// app.delete("/proker/:id", prokerController.delete)
-// app.patch("/proker/:id", prokerController.update)
 
 /**
  * kegiatan route
  */
-// app.post("/kegiatan/:id", kegiatanController.create)
+app.post("/kegiatan/:id", kegiatanController.create)
+app.get("/kegiatan/:idProker", kegiatanController.getByKelompok)
 
 // console.log("error");
 // app.get("/proker/detail/:id", auth, prokerController.findOne);
@@ -75,3 +76,5 @@ console.log(PORT);
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`)
 });
+
+
