@@ -3,10 +3,19 @@ const mongoose = require("mongoose")
 const User = new mongoose.model(
     "User", 
     new mongoose.Schema({
-        nama: { type: String, default:null },
-        email: { type: String, unique: true },
-        password: {type: String },
-        token: { type: String },
+        mahasiswa: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Mahasiswa"
+            }
+        ],
+        kelompok: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Kelompok"
+            }
+        ],
+        access_token: { type: String },
     })
 );
 

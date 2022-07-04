@@ -1,71 +1,49 @@
 const db = require("../models");
 const Kelompok = db.kelompok;
-const Proker = db.proker;
+const jsonResponse = require("../libs/jsonResponse");
+
+const message = {
+    error_create: "Opps, something was wrong when saving data",
+    success_create: "Successfully save data to the server",
+    error_get: "Oops, something was wrong when get data from the server",
+    success_get: "Succesfully get data from the server",
+};
 
 exports.create = async (req, res) => {
-    const { no_kelompok, lokasi, proker} = req.body
-
-    const kelompok = new Kelompok({
-        no_kelompok,
-        lokasi,
-        proker
-    });
+    const { no_kelompok, lokasi, proker } = req.body;
 
     try {
+        const kelompok = new Kelompok({
+            no_kelompok,
+            lokasi,
+            proker,
+        });
+
         const insertKelompok = await kelompok.save();
-        res.status(200).json(insertKelompok); 
+        if (!insertKelompok)
+            jsonResponse.error(req, res, message.error_create, 400);
+
+        jsonResponse.success(req, res, message.success_create, {
+            kelompok: insertKelompok,
+        });
     } catch (error) {
-        res.status(400).json({message: error.message});
+        jsonResponse.error(req, res, error.message, 400, []);
     }
+};
 
-}
-
-exports.updateProker = async (req, res) => {
-    const { id } = req.params
-    const { title, divisi, deskripsi } = req.body
-    
-    try{
-        const proker = new Proker({
-            title,
-            divisi,
-            deskripsi
-        })
-    
-        const saveProker = await proker.save()
-        console.log(saveProker);
-        const saveToKelompok = await Kelompok.findByIdAndUpdate(
-            id,
-            { $push: { proker: saveProker._id } },
-            { new: true, useFindAndModify: false }
-        )
-        console.log(saveToKelompok);
-
-        res.status(200).json(saveToKelompok);
-    } catch (error) {
-        res.status(400).json({message: error.message})
-    }
-}
-
-exports.findKelompokById = async (req, res) => {
-    try{
-        console.log(req.params);
-        const { id } = req.params
-        const kelompok = await Kelompok.findById(id).populate("proker").exec();
-        
-        res.status(200).json(kelompok);
-    }catch (error){
-        res.status(400).json({message: error.message})
-    }
-}
-
-exports.update = async (req, res) => {
+exports.getById = async (req, res) => {
     try {
-        const { id } = req.params
-        const { proker } = req.body
+        const { id } = req.params;
 
-        const kelompok = await Kelompok.updateOne({_id: id}, {$set: proker})
-        res.status(200).json(kelompok);
+        const kelompok = await Kelompok.findById(id)
+            .select("-__v")
+            .populate("proker");
+
+        if (!kelompok) jsonResponse.error(req, res, message.error_get, 400, []);
+
+        const response = { kelompok: kelompok };
+        jsonResponse.success(req, res, message.success_get, response);
     } catch (error) {
-        res.status(400).json({message: error.message})
+        jsonResponse.error(req, res, error.message, 400, []);
     }
-}
+};

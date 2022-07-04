@@ -6,13 +6,15 @@ const app = express();
 
 const cors = require("cors");
 var corsOptions = {
-    origin: 'http://localhost:8081'
+    origin: 'http://localhost:3000'
 };
 
 const authController = require("./controllers/auth.controller");
 const prokerController = require("./controllers/proker.controller");
 const kelompokController = require("./controllers/kelompok.controller");
 const kegiatanController = require("./controllers/kegiatan.controller")
+const divisiController = require("./controllers/divisi.controller")
+const mahasiswaController = require("./controllers/mahasiswa.controller")
 const auth = require("./middleware/auth");
 
 app.use(express.json());
@@ -50,7 +52,7 @@ app.post("/welcome",auth, (req, res) => {
  * kelompok route
  */
 app.post("/kelompok/create", kelompokController.create);
-app.get("/kelompok/:id", kelompokController.findKelompokById);
+app.get("/kelompok/:id", kelompokController.getById);
 
 /**
  * proker route
@@ -67,6 +69,17 @@ app.delete("/proker/:id", prokerController.delete) // id proker
 app.post("/kegiatan/:id", kegiatanController.create)
 app.get("/kegiatan/:idProker", kegiatanController.getByKelompok)
 
+/**
+ * divisi route
+ */
+app.post("/divisi", divisiController.create)
+app.get("/divisi", divisiController.get)
+
+/**
+ * mahasiswa route
+ */
+app.post("/mahasiswa", mahasiswaController.create)
+app.get("/mahasiswa/:kelompok", mahasiswaController.getByKelompok)
 // console.log("error");
 // app.get("/proker/detail/:id", auth, prokerController.findOne);
 // app.put("/proker/detail/:id", auth, prokerController.update);

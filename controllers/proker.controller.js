@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const db = require("../models");
 const Proker = db.proker;
 const Kelompok = db.kelompok;
+const jsonResponse = require("../libs/jsonResponse");
 
 //create proker using update Kelompok schema, send kelompok id to update field proker
 exports.create = async (req, res) => {
@@ -16,14 +17,18 @@ exports.create = async (req, res) => {
         });
 
         const saveProker = await proker.save();
+        if(!saveProker)
+            jsonResponse.error(req, res, message.error_create, 400)
         //only save _id proker in Kelompok Schema
         const saveToKelompok = await Kelompok.findByIdAndUpdate(
             id,
             { $push: { proker: saveProker._id } },
             { new: true, useFindAndModify: false }
         )
+        if(!saveToKelompok)
+            jsonResponse.error(req, res, message.error_create, 400)
 
-        res.status(200).json(saveToKelompok)
+        jsonResponse.success(req, res, message.success_create, saveToKelompok)
     } catch (error) {
         res.status(400).json({message: error.message})
     }

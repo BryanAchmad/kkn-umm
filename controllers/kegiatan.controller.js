@@ -2,6 +2,7 @@ const db = require("../models");
 const Kegiatan = db.kegiatan;
 const Proker = db.proker;
 const Kelompok = db.kelompok;
+const jsonResponse = require("../libs/jsonResponse");
 
 //create kegiatan using update Proker, using proker id to create kegiatan
 exports.create = async (req, res) => {
@@ -23,6 +24,8 @@ exports.create = async (req, res) => {
             { new: true, useFindAndModify: false }
         )
 
+        jsonResponse.success(req, res, )
+
         res.status(200).json(saveToProker)
     } catch (error) {
         res.status(400).json({ message: error.message })
@@ -31,7 +34,7 @@ exports.create = async (req, res) => {
 
 //fetch data kgiatan based on id proker, and only show field kegiatan
 exports.getByKelompok = async (req, res) => {
-    const { kelompok, idProker  } = req.params
+    const { idProker  } = req.params
 
     try {
         const proker = await Proker.findById(idProker).select("kegiatan -_id").populate("kegiatan").exec()
@@ -45,12 +48,16 @@ exports.getByKelompok = async (req, res) => {
 //update kegiatan using id kegiatan
 exports.update = async (req, res) => {
     const { id } = req.params
-    const { judul_kegiatan, tanggal_kegiatan, deskripsi } = req.body
+    // const { judul_kegiatan, tanggal_kegiatan, deskripsi } = req.body
 
     try {
+        const kegiatan = await Kegiatan.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+        if(!kegiatan)
+            return res.status(400).json({message: "Oops, data not found" })
 
+        res.status(200).json(kegiatan);
     } catch (error) {
-
+        res.status(400).json({ message: error.message })
     }
 }
 
@@ -60,8 +67,10 @@ exports.delete = async (req, res) => {
 
     try {
         const kegiatan = await Kegiatan.findByIdAndRemove(id)
+        if(!kegiatan)
+            return res.status(400).json({message: "Opps, data not found"})
 
-        res.status(200).json({ message: `data berhasil dihapus`});
+        res.status(200).json({ message: "successfully removed"});
     } catch (error) {
         res.status(400).json({ message: error.message})
     }
