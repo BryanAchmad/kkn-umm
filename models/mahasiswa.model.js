@@ -10,14 +10,6 @@ const Mahasiswa = new mongoose.model(
             jurusan: { type: String },
             fakultas: { type: String },
             nilai: { type: String, default: "X" },
-            isAccess: { type: Boolean, default: false },
-            kelompok: [
-                {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "Kelompok",
-                },
-            ],
-            access_token: { type: String },
         },
         {
             timestamps: {

@@ -1,21 +1,19 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const User = new mongoose.model(
-    "User", 
+    "User",
     new mongoose.Schema({
-        mahasiswa: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Mahasiswa"
-            }
-        ],
-        kelompok: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Kelompok"
-            }
-        ],
-        access_token: { type: String },
+        // user: { type: String, unique: true },
+        nim: { type: String },
+        idMahasiswa: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Mahasiswa",
+        },
+        kelompok: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Kelompok",
+        },
+        access_token: { type: String, select: false },
     })
 );
 

@@ -3,53 +3,54 @@ const bcrypt = require("bcryptjs");
 const db = require("../models");
 const Mahasiswa = db.mahasiswa;
 const Kelompok = db.kelompok;
+const User = db.user;
 const jsonResponse = require("../libs/jsonResponse");
 
 exports.login = async (req, res) => {
     try {
         const { nim, pic } = req.body;
+        // const picString = toString(pic);
+        // console.log("nim ", nim, " ,pic ", typeof pic);
 
-        if (!(nim && pic)) {
-            res.status(400).send({ message: "All input is required" });
-            return;
+        const user = await User.findOne({ nim: req.body.nim })
+            .select("-access_token")
+            .populate({
+                path: "idMahasiswa",
+                select: "-_id",
+            });
+        if (!user) {
+            return res
+                .status(400)
+                .send({ message: "Cant find user with that NIM" });
         }
+        // console.log(user.idMahasiswa.pic);
+        // console.log(typeof user.pic);
 
-        const mahasiswa = await Mahasiswa.findOne({ nim });
-        const encrypt = await bcrypt.compare(pic, mahasiswa.pic);
-        if (!mahasiswa || !encrypt) {
-            jsonResponse.error(req, res, "data not found", 400);
+        // const mahasiswa = await Mahasiswa.findOne({ nim });
+        const encrypt = await bcrypt.compare(pic, user.idMahasiswa.pic);
+        if (!encrypt) {
+            return res.status(400).send({ message: "PIC salah" });
         }
 
         const token = jwt.sign(
-            { mahasiswa_id: mahasiswa._id, nim },
+            { user_id: user._id, nim },
             process.env.TOKEN_KEY,
             {
                 expiresIn: "1d",
             }
         );
 
-        mahasiswa.access_token = token;
+        user.access_token = token;
 
-        const kelompok = await Kelompok.findOne({
-            kelompok: mahasiswa.kelompok,
-        });
-        console.log(kelompok)
+        // const mahasiswa = JSON.parse(user);
 
-        // if (mahasiswa && (await bcrypt.compare(pic, mahasiswa.pic))) {
-        //     const token = jwt.sign(
-        //         { mahasiswa_id: mahasiswa._id, nim },
-        //         process.env.TOKEN_KEY,
-        //         {
-        //             expiresIn: "1d",
-        //         }
-        //     );
+        // delete mahasiswa.access_token;
 
-        //     mahasiswa.access_token = token;
-
-        //     return res.status(200).json(mahasiswa)
-        // }
-
-        // res.status(400).send({ message: "Invalid credentials" });
+        return res
+            .status(200)
+            .cookie("token-auth", token, { maxAge: 900000, httpOnly: true })
+            .json({ success: true, message: "Login Success", data: user });
+        // jsonResponse.success(req, res, "Login Success", user);
     } catch (error) {
         console.error(error);
     }
@@ -57,41 +58,56 @@ exports.login = async (req, res) => {
 
 exports.register = async (req, res) => {
     try {
-        const { nama, email, password } = req.body;
+        const { nim, kelompok } = req.body;
 
-        if (!(nama, email, password)) {
-            res.status(400).send({ message: "All input is required" });
-            return;
+        if (!(nim, kelompok)) {
+            return res.status(400).send({ message: "All input is required" });
+        }
+        const mahasiswa = await Mahasiswa.findOne({ nim: nim });
+        if (!mahasiswa) {
+            return res.status(400).send({
+                message: "mahasiswa dengan nim tersebut tidak ditemukan",
+            });
         }
 
-        const checkUser = await User.findOne({ email });
-        if (checkUser) {
-            res.status(409).send({
+        const checkKelompok = await Kelompok.findOne({ no_kelompok: kelompok });
+        if (!checkKelompok) {
+            return res.status(400).send({
+                message: `Kelompok ${kelompok} tidak ditemukan`,
+            });
+        }
+
+        // const checkUser = await User.findOne({ nim });
+        const checkUser = await User.find({
+            nim: nim,
+            "kelompok.no_kelompok": kelompok,
+        })
+            .populate("mahasiswa")
+            .populate("kelompok");
+        if (!checkUser) {
+            return res.status(409).send({
                 message: "User already exist. Please login",
             });
-            return;
         }
 
-        encryptedPassword = await bcrypt.hash(password, 10);
-
-        const user = await User.create({
-            nama,
-            email: email.toLowerCase(),
-            password: encryptedPassword,
+        const user = new User({
+            nim: mahasiswa.nim,
+            idMahasiswa: mahasiswa._id,
+            kelompok: checkKelompok._id,
         });
 
-        const token = jwt.sign(
-            { user_id: user._id, email },
-            process.env.TOKEN_KEY,
-            {
-                expiresIn: "2h",
-            }
+        const saveUser = await user.save();
+        if (!saveUser) {
+            return res.status(400).send({ message: "Failed to create user" });
+        }
+
+        jsonResponse.success(
+            req,
+            res,
+            `Success to add new user for Kelompok ${kelompok}`,
+            saveUser
         );
-
-        user.token = token;
-
-        res.status(201).json(user);
     } catch (error) {
-        console.error(error);
+        jsonResponse.error(req, res, error.message, 400);
     }
 };
