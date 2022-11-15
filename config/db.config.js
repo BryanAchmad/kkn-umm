@@ -1,5 +1,6 @@
 // const mongoose = require("mongoose");
-const { MONGO_URI } = process.env;
+require("dotenv").config();
+// const { MONGO_URI } = process.env;
 const db = require("../models");
 const dbCredentials = {
     HOST: "mongodb://127.0.0.1:27017",
@@ -9,7 +10,7 @@ const dbCredentials = {
 exports.connect = () => {
     // db.mongoose.connect(`${dbCredentials.HOST}/${dbCredentials.DB}`, {
     db.mongoose
-        .connect(MONGO_URI, {
+        .connect(process.env.MONGO_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         })

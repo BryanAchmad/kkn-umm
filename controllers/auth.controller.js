@@ -5,6 +5,7 @@ const Mahasiswa = db.mahasiswa;
 const Kelompok = db.kelompok;
 const User = db.user;
 const jsonResponse = require("../libs/jsonResponse");
+require("dotenv").config();
 
 exports.login = async (req, res) => {
     try {
