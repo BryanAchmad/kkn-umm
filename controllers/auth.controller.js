@@ -9,15 +9,15 @@ const jsonResponse = require("../libs/jsonResponse");
 exports.login = async (req, res) => {
     try {
         const { nim, pic } = req.body;
+        console.log(typeof nim, typeof pic);
         // const picString = toString(pic);
         // console.log("nim ", nim, " ,pic ", typeof pic);
 
-        const user = await User.findOne({ nim: req.body.nim })
-            .select("-access_token")
-            .populate({
-                path: "idMahasiswa",
-                select: "-_id",
-            });
+        const user = await User.findOne({ nim: req.body.nim }).populate({
+            path: "idMahasiswa",
+            select: "-_id",
+        });
+        console.log(user);
         if (!user) {
             return res
                 .status(400)
@@ -41,6 +41,8 @@ exports.login = async (req, res) => {
         );
 
         user.access_token = token;
+
+        console.log("after token ", user);
 
         // const mahasiswa = JSON.parse(user);
 
