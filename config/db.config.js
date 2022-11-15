@@ -9,13 +9,10 @@ const dbCredentials = {
 exports.connect = () => {
     // db.mongoose.connect(`${dbCredentials.HOST}/${dbCredentials.DB}`, {
     db.mongoose
-        .connect(
-            `mongodb+srv://bryanachmad08:Bry4n81998@sim-kkn.jlzsol2.mongodb.net/?retryWrites=true&w=majority`,
-            {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-            }
-        )
+        .connect(MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        })
         .then(() => {
             console.log("Successfully connect to the database");
         })
