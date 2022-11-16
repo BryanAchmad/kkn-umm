@@ -7,7 +7,7 @@ const path = require("path");
 
 const cors = require("cors");
 var corsOptions = {
-    origin: ["http://localhost:3000", "https://vast-sands-85280.herokuapp.com"],
+    origin: ["http://localhost:3000", "https://pwa-kkn-fe.vercel.app"],
 };
 
 const authController = require("./controllers/auth.controller");
