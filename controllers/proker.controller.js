@@ -41,6 +41,7 @@ exports.create = async (req, res) => {
 
 //fetch proker by kelompok using Kelompok Schema and populate proker field
 exports.fetchAll = async (req, res) => {
+    console.log("fetched =", new Date());
     const { id } = req.params;
     console.log(id);
     // const _id = { _id: ObjectID(id) };
