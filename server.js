@@ -38,6 +38,8 @@ app.use(function (req, res, next) {
 app.use("/uploads", express.static(path.join(__dirname, "uploads/")));
 // app.use("/laporan", express.static(path.join(__dirname, "laporan")));
 
+app.use("/api");
+
 app.get("/", (req, res) => {
     res.send({ message: "Halooor" });
     console.log("Hallooo");
@@ -54,7 +56,7 @@ app.post("/login", authController.login);
 //     app.post("/proker/create", prokerController.create);
 // })
 
-app.post("/welcome", auth, (req, res) => {
+app.post("/welcome", (req, res) => {
     res.status(200).send("Welcome ❤");
 });
 
@@ -62,16 +64,16 @@ app.post("/welcome", auth, (req, res) => {
  * kelompok route
  */
 app.post("/kelompok/create", kelompokController.create);
-app.get("/kelompok/:id", auth, kelompokController.getById);
+app.get("/kelompok/:id", kelompokController.getById);
 
 /**
  * proker route
  */
-app.post("/proker/:id", auth, prokerController.create); //upsert kelompok.proker using id kelompok
-app.get("/proker/:id", auth, prokerController.fetchAll); //id kelompok
-app.get("/proker/details/:id", auth, prokerController.fetchOne); //id proker
-app.patch("/proker/:id", auth, prokerController.update); //id proker
-app.delete("/proker/:id", auth, prokerController.delete); // id proker
+app.post("/proker/:id", prokerController.create); //upsert kelompok.proker using id kelompok
+app.get("/proker/:id", prokerController.fetchAll); //id kelompok
+app.get("/proker/details/:id", prokerController.fetchOne); //id proker
+app.patch("/proker/:id", prokerController.update); //id proker
+app.delete("/proker/:id", prokerController.delete); // id proker
 // app.get("/proker/:id", prokerController.fetch) //find by id kelompok
 
 /**
@@ -83,22 +85,22 @@ app.post(
     upload.array("images"),
     kegiatanController.uploadFile
 );
-app.get("/kegiatan/:idProker", auth, kegiatanController.getByKelompok);
+app.get("/kegiatan/:idProker", kegiatanController.getByKelompok);
 
 /**
  * divisi route
  */
-app.post("/divisi", auth, divisiController.create);
-app.get("/divisi", auth, divisiController.get);
+app.post("/divisi", divisiController.create);
+app.get("/divisi", divisiController.get);
 
 /**
  * mahasiswa route
  */
 app.post("/mahasiswa", mahasiswaController.create);
-app.get("/mahasiswa/:kelompok", auth, mahasiswaController.getByKelompok);
+app.get("/mahasiswa/:kelompok", mahasiswaController.getByKelompok);
 // console.log("error");
-// app.get("/proker/detail/:id", auth, prokerController.findOne);
-// app.put("/proker/detail/:id", auth, prokerController.update);
+// app.get("/proker/detail/:id", prokerController.findOne);
+// app.put("/proker/detail/:id", prokerController.update);
 
 /**
  * laporan
@@ -109,8 +111,8 @@ app.post(
     uploadPdf.single("file"),
     laporanController.create
 );
-app.get("/laporan/:id", auth, laporanController.getById);
-app.get("/laporan/all/:idKelompok", auth, laporanController.fetchAll);
+app.get("/laporan/:id", laporanController.getById);
+app.get("/laporan/all/:idKelompok", laporanController.fetchAll);
 
 app.post(
     "/profil-desa/:id",
@@ -119,8 +121,8 @@ app.post(
     profilDesaController.create
 );
 
-app.post("/media/:id", auth, mediaController.create);
-app.delete("/media/:idLaporan/:idMedia", auth, mediaController.delete);
+app.post("/media/:id", mediaController.create);
+app.delete("/media/:idLaporan/:idMedia", mediaController.delete);
 
 const PORT = process.env.PORT || 8080;
 console.log(PORT);
