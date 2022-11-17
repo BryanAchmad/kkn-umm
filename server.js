@@ -81,7 +81,6 @@ app.delete("/proker/:id", prokerController.delete); // id proker
  */
 app.post(
     "/kegiatan/:id",
-    auth,
     upload.array("images"),
     kegiatanController.uploadFile
 );
@@ -107,7 +106,6 @@ app.get("/mahasiswa/:kelompok", mahasiswaController.getByKelompok);
  */
 app.post(
     "/laporan/:id",
-    auth,
     uploadPdf.single("file"),
     laporanController.create
 );
