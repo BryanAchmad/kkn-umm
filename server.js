@@ -114,7 +114,6 @@ app.get("/laporan/all/:idKelompok", laporanController.fetchAll);
 
 app.post(
     "/profil-desa/:id",
-    auth,
     uploadPdf.single("file"),
     profilDesaController.create
 );
