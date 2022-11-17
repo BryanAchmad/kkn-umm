@@ -38,7 +38,7 @@ app.use(function (req, res, next) {
 app.use("/uploads", express.static(path.join(__dirname, "uploads/")));
 // app.use("/laporan", express.static(path.join(__dirname, "laporan")));
 
-app.use("/api");
+// app.use("/api");
 
 app.get("/", (req, res) => {
     res.send({ message: "Halooor" });
