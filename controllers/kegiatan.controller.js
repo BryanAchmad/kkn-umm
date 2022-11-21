@@ -27,6 +27,7 @@ exports.uploadFile = async (req, res, next) => {
             images: multipleImage,
         });
 
+        console.log(kegiatan);
         const saveKegiatan = await kegiatan.save();
 
         const saveToProker = await Proker.findByIdAndUpdate(
