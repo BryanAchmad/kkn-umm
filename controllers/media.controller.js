@@ -38,7 +38,7 @@ exports.getByKelompok = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const getByKelompok = await Media.find({ no_kelompok: id });
+        const getByKelompok = await Media.find({ no_kelompok: id }).select('-updated_at no_kelompok __v ');
         if (!getByKelompok) {
             return jsonResponse.error(
                 req,
