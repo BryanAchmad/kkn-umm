@@ -3,7 +3,7 @@ const Media = db.media;
 const Kelompok = db.kelompok;
 const jsonResponse = require("../libs/jsonResponse");
 
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
     const { id } = req.params;
     console.log(req.body);
 
@@ -12,41 +12,32 @@ exports.create = (req, res) => {
         link: req.body.link,
     });
 
-    Promise.all([
-        media.save(),
-        Kelompok.findByIdAndUpdate(
+    try {
+        const saveMedia = await media.save();
+        if (!saveMedia) {
+            jsonResponse.error(req, res, "Upload failed", 400);
+        }
+
+        const saveToKelompok = await Kelompok.findByIdAndUpdate(
             id,
             { $push: { media: saveMedia._id } },
             { new: true, useFindAndModify: false }
-        ),
-    ])
-        .then((response) => {
-            console.log(response);
-        })
-        .catch((e) => {
-            console.log(e);
-            jsonResponse.error(req, res, e.message, 400);
-        });
+        );
 
-    // const saveMedia = await media.save();
-    // if (!saveMedia) {
-    //     jsonResponse.error(req, res, "Upload failed", 400);
-    // }
+        if (!saveToKelompok) {
+            await Media.findByIdAndRemove(saveMedia._id);
+            jsonResponse.error(req, res, error.message, 400);
+        }
 
-    // const saveToKelompok = await Kelompok.findByIdAndUpdate(
-    //     id,
-    //     { $push: { media: saveMedia._id } },
-    //     { new: true, useFindAndModify: false }
-    // );
-
-    // console.log(saveToKelompok);
-
-    // jsonResponse.success(
-    //     req,
-    //     res,
-    //     "Laporan akhir successfully uploaded",
-    //     saveMedia
-    // );
+        jsonResponse.success(
+            req,
+            res,
+            "Laporan akhir successfully uploaded",
+            saveMedia
+        );
+    } catch (error) {
+        jsonResponse.error(req, res, error.message, 400);
+    }
 };
 
 exports.getByKelompok = async (req, res) => {
