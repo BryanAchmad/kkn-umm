@@ -116,7 +116,7 @@ app.post(
 
 app.post("/media/:id", mediaController.create);
 app.delete("/media/:idLaporan/:idMedia", mediaController.delete);
-app.get("/media/:id", mediaController.getByKelompok);
+app.get("/media/:kelompok", mediaController.getByKelompok);
 
 const PORT = process.env.PORT || 8080;
 console.log(PORT);

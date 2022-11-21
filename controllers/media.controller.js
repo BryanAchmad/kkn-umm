@@ -35,10 +35,10 @@ exports.create = async (req, res) => {
 };
 
 exports.getByKelompok = async (req, res) => {
-    const { id } = req.params;
+    const { kelompok } = req.params;
 
     try {
-        const getByKelompok = await Media.find({ no_kelompok: id }).select('_id link created_at');
+        const getByKelompok = await Media.find({ no_kelompok: kelompok }).select('_id link created_at');
         if (!getByKelompok) {
             return jsonResponse.error(
                 req,
