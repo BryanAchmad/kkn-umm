@@ -34,6 +34,25 @@ exports.create = async (req, res) => {
     }
 };
 
+exports.getByKelompok = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const getByKelompok = await Media.find({ no_kelompok: id });
+        if (!getByKelompok) {
+            return jsonResponse.error(
+                req,
+                res,
+                "failed to get Media Publikasi"
+            );
+        }
+
+        jsonResponse.success(req, res, "success", getByKelompok);
+    } catch (error) {
+        jsonResponse.error(req, res, error.message, 400);
+    }
+};
+
 exports.delete = async (req, res) => {
     const { idMedia, idLaporan } = req.params;
     try {

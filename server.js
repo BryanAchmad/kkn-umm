@@ -104,11 +104,7 @@ app.get("/mahasiswa/:kelompok", mahasiswaController.getByKelompok);
 /**
  * laporan
  */
-app.post(
-    "/laporan/:id",
-    uploadPdf.single("file"),
-    laporanController.create
-);
+app.post("/laporan/:id", uploadPdf.single("file"), laporanController.create);
 app.get("/laporan/:id", laporanController.getById);
 app.get("/laporan/all/:idKelompok", laporanController.fetchAll);
 
@@ -120,6 +116,7 @@ app.post(
 
 app.post("/media/:id", mediaController.create);
 app.delete("/media/:idLaporan/:idMedia", mediaController.delete);
+app.get("/media/:id", mediaController.getByKelompok);
 
 const PORT = process.env.PORT || 8080;
 console.log(PORT);
