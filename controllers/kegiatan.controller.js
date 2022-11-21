@@ -22,7 +22,7 @@ exports.uploadFile = async (req, res, next) => {
         });
         const kegiatan = new Kegiatan({
             judul_kegiatan: req.body.judul_kegiatan,
-            tanggal_kegiatan: req.body.tanggal_kegiatan,
+            tanggal_kegiatan: new Date(req.body.tanggal_kegiatan).toISOString(),
             deskripsi: req.body.deskripsi,
             images: multipleImage,
         });
