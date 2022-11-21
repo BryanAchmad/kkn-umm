@@ -7,12 +7,6 @@ const Laporan = new mongoose.model(
             no_kelompok: { type: Number },
             laporan: { type: [Object] },
             status: { type: Boolean, default: false },
-            media: [
-                {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "Media",
-                },
-            ],
         },
         {
             timestamps: {

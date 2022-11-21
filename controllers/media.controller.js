@@ -1,39 +1,52 @@
 const db = require("../models");
 const Media = db.media;
-const Laporan = db.laporan;
+const Kelompok = db.kelompok;
 const jsonResponse = require("../libs/jsonResponse");
 
-exports.create = async (req, res) => {
+exports.create = (req, res) => {
     const { id } = req.params;
     console.log(req.body);
-    try {
-        const media = new Media({
-            no_kelompok: req.body.no_kelompok,
-            link: req.body.link,
-        });
 
-        const saveMedia = await media.save();
-        if (!saveMedia) {
-            jsonResponse.error(req, res, "Upload failed", 400);
-        }
+    const media = new Media({
+        no_kelompok: req.body.no_kelompok,
+        link: req.body.link,
+    });
 
-        const saveToLaporan = await Laporan.findByIdAndUpdate(
+    Promise.all([
+        media.save(),
+        Kelompok.findByIdAndUpdate(
             id,
             { $push: { media: saveMedia._id } },
             { new: true, useFindAndModify: false }
-        );
+        ),
+    ])
+        .then((response) => {
+            console.log(response);
+        })
+        .catch((e) => {
+            console.log(e);
+            jsonResponse.error(req, res, e.message, 400);
+        });
 
-        console.log(saveToLaporan);
+    // const saveMedia = await media.save();
+    // if (!saveMedia) {
+    //     jsonResponse.error(req, res, "Upload failed", 400);
+    // }
 
-        jsonResponse.success(
-            req,
-            res,
-            "Laporan akhir successfully uploaded",
-            saveMedia
-        );
-    } catch (error) {
-        jsonResponse.error(req, res, error.message, 400);
-    }
+    // const saveToKelompok = await Kelompok.findByIdAndUpdate(
+    //     id,
+    //     { $push: { media: saveMedia._id } },
+    //     { new: true, useFindAndModify: false }
+    // );
+
+    // console.log(saveToKelompok);
+
+    // jsonResponse.success(
+    //     req,
+    //     res,
+    //     "Laporan akhir successfully uploaded",
+    //     saveMedia
+    // );
 };
 
 exports.getByKelompok = async (req, res) => {
@@ -58,15 +71,15 @@ exports.getByKelompok = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-    const { idMedia, idLaporan } = req.params;
+    const { media, kelompok } = req.params;
     try {
-        const deleteMedia = await Media.findByIdAndRemove(idMedia);
+        const deleteMedia = await Media.findByIdAndRemove(media);
         if (!deleteMedia) {
             jsonResponse.error(req, res, "failed to delete laporan");
         }
 
-        const deleteFromLaporan = await Laporan.findByIdAndUpdate(idLaporan, {
-            $pull: { media: { _id: idMedia } },
+        const deleteFromKelompok = await Kelompok.findByIdAndUpdate(kelompok, {
+            $pull: { media: { _id: media } },
         });
 
         jsonResponse.success(req, res, "Successfully removed", []);

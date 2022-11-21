@@ -20,6 +20,12 @@ const Kelompok = new mongoose.model(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "ProfilDesa",
             },
+            media: [
+                {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Media",
+                },
+            ],
         },
         {
             timestamps: {
