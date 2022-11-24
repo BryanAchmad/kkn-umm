@@ -97,7 +97,7 @@ app.get("/divisi", divisiController.get);
  */
 app.post("/mahasiswa", mahasiswaController.create);
 app.get("/mahasiswa/:kelompok", mahasiswaController.getByKelompok);
-app.get("/mahasiswa/:userId", mahasiswaController.getById);
+app.get("/mahasiswa/details/:userId", mahasiswaController.getById);
 // console.log("error");
 // app.get("/proker/detail/:id", prokerController.findOne);
 // app.put("/proker/detail/:id", prokerController.update);
