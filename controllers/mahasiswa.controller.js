@@ -50,9 +50,12 @@ exports.getByKelompok = async (req, res) => {
         //     );
 
         // console.log("datakelompok => ", dataKelompok);
-        const mahasiswa = await Mahasiswa.find({}).where({'kelompok.no_kelompok' : kelompok}).populate({
-            path: "kelompok"
-        }).exec();
+        const mahasiswa = await Mahasiswa.find({})
+            .where({ "kelompok.no_kelompok": kelompok })
+            .populate({
+                path: "kelompok",
+            })
+            .exec();
 
         console.log(mahasiswa);
         if (!mahasiswa) jsonResponse.error(req, res, "failed", 400);
@@ -64,7 +67,7 @@ exports.getByKelompok = async (req, res) => {
 };
 
 exports.getById = async (req, res) => {
-    const { id } = req.params;
+    const { userId } = req.params;
 
     try {
         const mahasiswa = await Mahasiswa.findById(id);
