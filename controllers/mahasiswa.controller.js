@@ -70,7 +70,7 @@ exports.getById = async (req, res) => {
     const { userId } = req.params;
 
     try {
-        const mahasiswa = await Mahasiswa.findById(id);
+        const mahasiswa = await Mahasiswa.findById(userId);
         if (!mahasiswa) jsonResponse.error(req, res, "failed", 400);
 
         jsonResponse.success(req, res, "success", mahasiswa);
