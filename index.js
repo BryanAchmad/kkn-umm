@@ -41,7 +41,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads/")));
 // app.use("/api");
 
 app.get("/", (req, res) => {
-    res.send({ message: "Halooor" });
+    res.send({ message: "Running well" });
     console.log("Hallooo");
 });
 
