@@ -7,7 +7,12 @@ const path = require("path");
 
 const cors = require("cors");
 var corsOptions = {
-    origin: ["http://localhost:3000", "https://pwa-kkn-fe.vercel.app"],
+    origin: [
+        "http://localhost:3000",
+        "https://pwa-kkn-fe.vercel.app",
+        "https://www.bryandal.my.id",
+        "https://bryandal.my.id",
+    ],
 };
 
 const authController = require("./controllers/auth.controller");
