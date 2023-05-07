@@ -14,7 +14,13 @@ exports.login = async (req, res) => {
         // const picString = toString(pic);
         // console.log("nim ", nim, " ,pic ", typeof pic);
 
-        const user = await User.findOne({ nim: req.body.nim });
+        const user = await User.findOne({ nim: req.body.nim }).populate(
+            {
+                path: "idMahasiswa",
+                select: "-_id",
+            },
+            { path: "kelompok", select: "no_kelompok" }
+        );
         console.log(user);
         if (!user) {
             return res
