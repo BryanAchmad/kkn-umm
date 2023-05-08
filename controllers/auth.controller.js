@@ -17,7 +17,6 @@ exports.login = async (req, res) => {
         const user = await User.findOne({ nim: req.body.nim })
             .populate({
                 path: "idMahasiswa",
-                select: "-pic",
             })
             .populate({ path: "kelompok", select: "no_kelompok" });
         console.log(user);
