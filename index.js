@@ -80,6 +80,7 @@ app.get("/proker/details/:id", prokerController.fetchOne); //id proker
 app.patch("/proker/:id", prokerController.update); //id proker
 app.delete("/proker/:id", prokerController.delete); // id proker
 // app.get("/proker/:id", prokerController.fetch) //find by id kelompok
+app.delete("/proker", prokerController.truncate);
 
 /**
  * kegiatan route
@@ -90,6 +91,8 @@ app.post(
     kegiatanController.uploadFile
 );
 app.get("/kegiatan/:idProker", kegiatanController.getByKelompok);
+app.delete("/kegiatan/:idKegiatan", kegiatanController.delete);
+app.delete("/kegiatan", kegiatanController.truncate);
 
 /**
  * divisi route

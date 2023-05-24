@@ -133,3 +133,17 @@ exports.delete = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+exports.truncate = async (req, res) => {
+    try {
+        const kegiatan = await Kegiatan.deleteMany();
+        if (!kegiatan)
+            return res
+                .status(400)
+                .json({ message: "Failed to delete all data" });
+
+        res.status(200).json({ message: "successfully delete all data" });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};

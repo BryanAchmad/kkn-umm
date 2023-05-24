@@ -19,7 +19,7 @@ exports.create = async (req, res) => {
         const saveProker = await proker.save();
         if (!saveProker)
             jsonResponse.error(req, res, "Failed to save proker", 400);
-        //only save _id proker in Kelompok Schema
+
         const saveToKelompok = await Kelompok.findByIdAndUpdate(
             id,
             { $push: { proker: saveProker._id } },
@@ -96,6 +96,20 @@ exports.delete = async (req, res) => {
         if (!proker) return res.status(400).json({ message: "id not found " });
 
         res.status(200).json({ message: "successfully remove" });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+exports.truncate = async (req, res) => {
+    // const { id } = req.params;
+
+    try {
+        const proker = await Proker.deleteMany();
+        if (!proker)
+            return res.status(400).json({ message: "failed delete data" });
+
+        res.status(200).json({ message: "successfully remove all datas" });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
